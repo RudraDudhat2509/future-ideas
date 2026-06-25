@@ -101,7 +101,7 @@ LLM-as-judge is the dominant eval paradigm (Langfuse, Arize, Braintrust all ship
 - Idea 2 has the fastest path to real users
 - Idea 1 has the deepest interview story
 - Idea 3 is the most unique, lowest competition
-- Idea 4 has product potential — CLAUDE.md ecosystem is growing fast
+- Idea 4 (Glyph) FAILED the gauntlet on 2026-06-26 — shelved. Problem/solution mismatch, security theater, and the literature treats stego-in-images as an attack not a feature. Full critique in glyph.md.
 - Ideas 5, 6, 7 were run through a novelty/saturation gauntlet on 2026-06-26 (see Gauntlet lines)
 - Idea 5 (semantic cache) survived the gauntlet intact — lowest saturation, vendor-confirmed pain, best Portkey outreach
 - Idea 6 (MCP-AttackBench) is the best founder-outreach play but only in its repositioned "benchmark the scanners" form, not as another scanner

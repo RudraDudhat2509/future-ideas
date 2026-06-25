@@ -168,3 +168,21 @@ All dependencies are mature and well-documented. No exotic setup.
 - Multi-device UUID sync (password manager integration?)
 - Should public.pem be embedded in the PNG metadata for self-contained verification?
 - Package name — "glyph" likely taken on PyPI
+
+---
+
+## Gauntlet Review (2026-06-26) — DO NOT BUILD AS SPECCED
+
+Ran this through the same novelty/validity gauntlet as ideas 5-7. It fails on three independent axes. Recording here so I don't sink a week into it later.
+
+**1. Problem and solution do not connect (fatal).** The doc opens with context drift ("LLMs forget instructions over long conversations") then solves it with encryption + steganography. Those are unrelated problems. `glyph decode` returns the exact same markdown that was in CLAUDE.md — feeding that to the model is byte-for-byte identical to feeding the plaintext file. The crypto/PNG layer does nothing for drift. Drift is an attention-over-long-context problem; the only fix is periodic re-injection, which a plaintext file does just as well. The headline problem is solved by neither the encryption nor the stego.
+
+**2. The steganography is security theater.** Strip the drift framing and the real value is "encrypt + tamper-detect my instruction files" — which is `age`/`gpg` + a signature, a ~20-line script. The PNG/LSB layer is the impressive-looking part, and the Cons section already dismantles it: detectable by StegExpose (security through obscurity), destroyed by platform recompression (kills the "shareable anywhere" claim), and still needs a plaintext bootstrap wrapper (can't even hide that instructions exist). A security interviewer asks "why stego instead of just encrypting the file?" and the only honest answer is "it looks cool." Wrong answer for a security-positioned candidate — same trap as IntentMap: impressive-looking, structurally unsound.
+
+**3. The literature treats this technique as an ATTACK, not a feature.** Prior-art search: every result on "hidden instructions in images that an LLM reads" classifies it as offensive — arXiv "first comprehensive study of steganographic prompt injection against VLMs" (arxiv.org/html/2507.22304), Cloud Security Alliance research note on image prompt injection, OWASP prompt-injection cheat sheet explicitly lists "hidden text in images using steganography," reported attack success rates up to 82%. Glyph builds that exact delivery mechanism and ships it as a feature. To a security-savvy founder it reads as normalizing a known attack vector — actively hurts the niche instead of helping it.
+
+**4. Zero founder-outreach value.** Confirmed goal is founders replying to cold DMs. Glyph is a standalone gadget that produces no finding about anyone's product — no "I ran X against your system, here's the data." It touches none of Portkey / Langfuse / Arize. On the one axis that matters, it scores ~zero.
+
+**Salvage (different project, not Glyph):** the only hot, in-niche thread here is the *defensive* inverse — detecting/preventing steganographic prompt injection in images that multimodal agents ingest. Real (82% success rates, weak defenses), dead-center the agentic-attack-surface niche, and outreach-relevant. But that abandons Glyph entirely; it only shares the word "steganography."
+
+**Disposition:** shelved. Build order for outreach goal is Idea 5 (semantic cache leaderboard) > Idea 6 (MCP-AttackBench) > Idea 7 (judge reliability) >> Glyph.
