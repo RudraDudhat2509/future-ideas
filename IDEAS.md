@@ -40,9 +40,23 @@ When an AI agent does something wrong, you cannot easily tell why. Was it your i
 
 ---
 
+## Idea 4: Glyph — Steganographic Instruction Persistence for LLMs
+
+CLAUDE.md, memory files, and design specs are plain markdown loaded once at session start. LLMs drift from them over long conversations — 65% of enterprise AI failures trace to context drift. The files are also plaintext-readable, accidentally editable, and not portable. Glyph replaces all of these with UUID-encrypted PNGs using LSB steganography. Each instruction file becomes an image indistinguishable from real artwork. The LLM decodes it on demand via a CLI command. An Ed25519 signature and JWT-style payload verify the content came from the legitimate encoder, closing the image-as-attack-surface threat vector.
+
+**Who uses it:** Anyone running LLM agents with persistent instructions — Claude Code users, developers with CLAUDE.md setups, teams managing LLM memory and design specs across long conversations.
+
+**Why it is deep:** Steganography + AES-256-GCM authenticated encryption + Ed25519 asymmetric signing in one pipeline. The JWT-like header with expiry claims makes instructions time-bounded. The real unsolved problem is seamless re-injection — making instruction refresh feel automatic rather than a manual CLI call. Full design in glyph.md.
+
+**Technical core:** LSB steganography in lossless PNGs as a secure opaque container. UUID → PBKDF2 → AES-256-GCM for confidentiality. Ed25519 keypair for content authenticity. ZSTD compression before encryption. ~1 week to build.
+
+---
+
 ## Notes
 
-- All three build on or complement diffprompt
+- Ideas 1, 2, 3 build on or complement diffprompt
+- Idea 4 is standalone — different problem space, different user
 - Idea 2 has the fastest path to real users
 - Idea 1 has the deepest interview story
 - Idea 3 is the most unique, lowest competition
+- Idea 4 has product potential — CLAUDE.md ecosystem is growing fast
